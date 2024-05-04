@@ -5,7 +5,7 @@ use serde_json::{json, Value};
 use tokio::sync::oneshot::channel;
 
 use crate::{
-    data::{Event, FeatureFlag, FeatureFlagCollection, Person},
+    data::{Event, FeatureFlag, FeatureFlagCollection, Person, PropertyFilter},
     error::PosthogError,
 };
 
@@ -22,7 +22,7 @@ impl PosthogClient {
         let json = json!({
             "api_key": self.api_key,
             "distinct_id": person.distinct_id,
-            "person_properties": person.build_properties(true, true, false),
+            "person_properties": person.build_properties(PropertyFilter::new().include_person_properties(true).include_ip(true)),
         });
 
         let (tx, rx) = channel();

@@ -4,7 +4,7 @@ use serde_json::Value;
 
 use crate::{client::PosthogClient, error::PosthogError};
 
-use super::Person;
+use super::{Person, PropertyFilter};
 
 pub struct Event {
     pub(crate) name: String,
@@ -36,7 +36,13 @@ impl Event {
     pub(crate) fn build_properties(&self, person: &Person) -> HashMap<String, Value> {
         let mut properties = self.properties.clone().unwrap_or_default();
 
-        let person_event_properties = person.build_properties(self.is_identify, true, true);
+        let person_event_properties = person.build_properties(
+            PropertyFilter::new()
+                .include_person_properties(self.is_identify)
+                .use_set_syntax(self.is_identify)
+                .include_ip(true)
+                .include_feature_flags(true),
+        );
         properties.extend(person_event_properties);
 
         properties

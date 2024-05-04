@@ -1,6 +1,6 @@
 [package]
 name = "hedgehog-rs"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["vaperion <vaperion@riseup.net>"]
 description = "A simple Rust library for interacting with the Posthog API."
 edition = "2021"

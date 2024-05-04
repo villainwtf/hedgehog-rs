@@ -1,10 +1,44 @@
 use std::collections::HashMap;
 
-use serde_json::Value;
+use serde_json::{json, Value};
 
 use crate::error::PosthogError;
 
 use super::FeatureFlagCollection;
+
+#[derive(Default, Debug, Clone)]
+pub struct PropertyFilter {
+    pub(crate) include_person_properties: bool,
+    pub(crate) use_set_syntax: bool,
+    pub(crate) include_ip: bool,
+    pub(crate) include_feature_flags: bool,
+}
+
+impl PropertyFilter {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn include_person_properties(mut self, include_person_properties: bool) -> Self {
+        self.include_person_properties = include_person_properties;
+        self
+    }
+
+    pub fn use_set_syntax(mut self, use_set_syntax: bool) -> Self {
+        self.use_set_syntax = use_set_syntax;
+        self
+    }
+
+    pub fn include_ip(mut self, include_ip: bool) -> Self {
+        self.include_ip = include_ip;
+        self
+    }
+
+    pub fn include_feature_flags(mut self, include_feature_flags: bool) -> Self {
+        self.include_feature_flags = include_feature_flags;
+        self
+    }
+}
 
 #[derive(Debug, Clone)]
 pub struct Person {
@@ -35,27 +69,26 @@ impl Person {
         self.stored_feature_flags.as_ref()
     }
 
-    pub(crate) fn build_properties(
-        &self,
-        include_person_properties: bool,
-        include_ip: bool,
-        include_feature_flags: bool,
-    ) -> HashMap<String, Value> {
+    pub(crate) fn build_properties(&self, filter: PropertyFilter) -> HashMap<String, Value> {
         let mut properties = HashMap::new();
 
-        if include_person_properties {
+        if filter.include_person_properties {
             if let Some(person_properties) = &self.properties {
-                properties.extend(person_properties.clone());
+                if filter.use_set_syntax {
+                    properties.insert("$set".to_string(), json!(person_properties));
+                } else {
+                    properties.extend(person_properties.clone());
+                }
             }
         }
 
-        if include_ip {
+        if filter.include_ip {
             if let Some(client_ip) = &self.client_ip {
                 properties.insert("$ip".to_string(), Value::String(client_ip.clone()));
             }
         }
 
-        if include_feature_flags {
+        if filter.include_feature_flags {
             if let Some(active_feature_flags) = &self.stored_feature_flags {
                 for (key, value) in active_feature_flags.iter() {
                     properties.insert(format!("$feature/{}", key), value.variant_as_str().into());
