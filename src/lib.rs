@@ -3,8 +3,8 @@
 //!
 //! # Example
 //! ```no_run
-//! use hedgehog::client::PosthogClient;
-//! use hedgehog::data::{Event, Person};
+//! use hedgehog_rs::client::PosthogClient;
+//! use hedgehog_rs::data::{Event, Person};
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {
