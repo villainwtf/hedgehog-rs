@@ -24,8 +24,8 @@ impl FeatureFlagCollection {
         self.get(key).and_then(|flag| flag.str())
     }
 
-    pub fn get_bool_flag(&self, key: &str) -> bool {
-        self.get(key).map_or(false, |flag| flag.variant_as_bool())
+    pub fn get_bool_flag(&self, key: &str) -> Option<bool> {
+        self.get(key).and_then(|flag| flag.bool())
     }
 
     pub fn get_int_flag(&self, key: &str) -> Option<i64> {

@@ -43,7 +43,7 @@
 //!     let feature_flags = client.feature_flags(&mut person).await?;
 //!
 //!     // Test a feature flag
-//!     if feature_flags.get_bool_flag("test_feature_flag") {
+//!     if feature_flags.get_bool_flag("test_feature_flag").unwrap_or(false) {
 //!         println!("Feature flag is enabled");
 //!     } else {
 //!         println!("Feature flag is disabled");
