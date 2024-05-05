@@ -1,3 +1,4 @@
+use serde::Deserialize;
 use serde_json::json;
 use tokio::sync::oneshot::channel;
 
@@ -51,8 +52,14 @@ impl PosthogClient {
             .map_err(|_| PosthogError::QueueError)?;
 
         let json = rx.await.map_err(|_| PosthogError::QueueError)??;
-        let json = serde_json::from_value::<Vec<EarlyAccessFeature>>(json)?;
+        let json = serde_json::from_value::<PartialEarlyAccessFeaturesResponse>(json)?;
 
-        Ok(json)
+        Ok(json.early_access_features)
     }
+}
+
+#[derive(Deserialize)]
+struct PartialEarlyAccessFeaturesResponse {
+    #[serde(rename = "earlyAccessFeatures")]
+    early_access_features: Vec<EarlyAccessFeature>,
 }
