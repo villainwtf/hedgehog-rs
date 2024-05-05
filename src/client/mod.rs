@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 mod builder;
+mod early_access;
 mod event;
 mod feature_flag;
 mod identify;

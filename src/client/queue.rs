@@ -33,6 +33,12 @@ pub enum PosthogRequest {
     /// Method: POST
     EvaluateFeatureFlags { body: Value },
 
+    /// Get early access features.
+    ///
+    /// Endpoint: /api/early_access_features
+    /// Method: GET
+    GetEarlyAccessFeatures { api_key: String },
+
     /// Any other request.
     ///
     /// Endpoint: Any
@@ -162,6 +168,12 @@ impl QueueWorker {
             PosthogRequest::EvaluateFeatureFlags { body } => {
                 (Method::POST, "decide?v=3".to_string(), body)
             }
+
+            PosthogRequest::GetEarlyAccessFeatures { api_key } => (
+                Method::GET,
+                format!("api/early_access_features?api_key={}", api_key),
+                Value::Null,
+            ),
 
             PosthogRequest::Other {
                 method,
