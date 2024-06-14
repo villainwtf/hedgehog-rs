@@ -125,7 +125,7 @@ impl QueueWorker {
                                 response_tx: None,
                             };
 
-                            worker.dispatch_request(request).await;
+                            worker.dispatch_request(request);
                         }
                     }
                 }
@@ -135,31 +135,19 @@ impl QueueWorker {
         worker
     }
 
-    pub fn enqueue_capture_event(&self, request: QueuedRequest) {
+    pub fn offer(&self, request: QueuedRequest) {
         match request.request {
             PosthogRequest::CaptureEvent { body } => {
                 self.batch_capture_tx.send(body).ok();
             }
 
             _ => {
-                panic!("Only capture events can be enqueued.");
+                self.dispatch_request(request);
             }
         }
     }
 
-    pub async fn offer(&self, request: QueuedRequest) {
-        match request.request {
-            PosthogRequest::CaptureEvent { body } => {
-                self.batch_capture_tx.send(body).ok();
-            }
-
-            _ => {
-                self.dispatch_request(request).await;
-            }
-        }
-    }
-
-    pub async fn dispatch_request(&self, request: QueuedRequest) {
+    pub fn dispatch_request(&self, request: QueuedRequest) {
         let client = self.client.clone();
         tokio::spawn(async move {
             QueueWorker::handle_request(client, request).await;

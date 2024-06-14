@@ -40,14 +40,12 @@ impl PosthogClient {
     pub async fn early_access_features(&self) -> Result<Vec<EarlyAccessFeature>, PosthogError> {
         let (tx, rx) = channel();
 
-        self.queue
-            .offer(QueuedRequest {
-                request: GetEarlyAccessFeatures {
-                    api_key: self.api_key.clone(),
-                },
-                response_tx: Some(tx),
-            })
-            .await;
+        self.queue.offer(QueuedRequest {
+            request: GetEarlyAccessFeatures {
+                api_key: self.api_key.clone(),
+            },
+            response_tx: Some(tx),
+        });
 
         let json = rx.await.map_err(|_| PosthogError::QueueError)??;
         let json = serde_json::from_value::<PartialEarlyAccessFeaturesResponse>(json)?;
