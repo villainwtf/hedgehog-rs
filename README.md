@@ -7,8 +7,7 @@ Hedgehog is a Rust library designed to make it easy to interact with the [Postho
 This repository contains software that was originally developed for internal use by our organization. We have chosen to open-source this software in the hopes that it may be of use to others.
 
 Please note the following important points:
-- While we are making this software available to the public, we will not be providing external support. If you choose to use this software, please understand that you do so entirely at your own risk.
-- Additionally, we will not be accepting any contributions to this project. The source code is available for you to use and modify as you wish, within the bounds of the included license, but we will not be incorporating any changes or enhancements made by external parties.
+- While we are making this software available to the public, we will not be providing external support. If you choose to use this software, please understand that you do so entirely at your own risk. The source code is available for you to use and modify as you wish, within the bounds of the included license.
 
 ## Why Hedgehog?
 
