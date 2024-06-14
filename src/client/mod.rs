@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 mod builder;
 mod early_access;
 mod event;
@@ -15,7 +13,7 @@ use self::queue::QueueWorker;
 #[derive(Debug, Clone)]
 pub struct PosthogClient {
     pub(crate) api_key: String,
-    pub(crate) queue_worker: Arc<QueueWorker>,
+    pub(crate) queue: QueueWorker,
 }
 
 impl PosthogClient {
@@ -26,7 +24,7 @@ impl PosthogClient {
     pub(crate) fn new(base_url: String, api_key: String) -> Self {
         Self {
             api_key,
-            queue_worker: QueueWorker::new(base_url),
+            queue: QueueWorker::new(base_url),
         }
     }
 }
